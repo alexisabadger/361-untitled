@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Table from '../table/Table';
+import HamburgerMenu from '../hamburgermenu/HamburgerMenu';
 
 interface NutritionData {
   items: {
@@ -26,6 +27,7 @@ interface SearchFieldProps {
 const SearchField: React.FC<SearchFieldProps> = ({ onNutritionData }) => {
   const [query, setQuery] = useState('');
   const [nutritionData, setNutritionData] = useState<NutritionData | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<(keyof NutritionData['items'][0])[]>([]);
 
   const handleSearch = async () => {
     try {
@@ -38,10 +40,14 @@ const SearchField: React.FC<SearchFieldProps> = ({ onNutritionData }) => {
         }
       );
       setNutritionData(response.data);
-      onNutritionData(response.data); // Pass the nutrition data to the parent component
+      onNutritionData(response.data);
     } catch (error) {
       console.error('Error fetching nutrition data:', error);
     }
+  };
+
+  const handleOptionsChange = (options: (keyof NutritionData['items'][0])[]) => {
+    setSelectedOptions(options);
   };
 
   return (
@@ -53,7 +59,15 @@ const SearchField: React.FC<SearchFieldProps> = ({ onNutritionData }) => {
         placeholder="Enter food query"
       />
       <button onClick={handleSearch}>Search</button>
-      {nutritionData && <Table data={nutritionData.items} />}
+      {nutritionData && (
+        <>
+          <HamburgerMenu
+            options={Object.keys(nutritionData.items[0]) as (keyof NutritionData['items'][0])[]}
+            onOptionsChange={handleOptionsChange}
+          />
+          <Table data={nutritionData.items} selectedOptions={selectedOptions} />
+        </>
+      )}
     </div>
   );
 };
