@@ -56,9 +56,9 @@ const SearchField: React.FC<SearchFieldProps> = ({ onNutritionData }) => {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Enter food query"
+        placeholder="Enter food the food you are looking for"
       />
-      <button onClick={handleSearch}>Search</button>
+      <button onClick={handleSearch}>Get Nutrition Information</button>
       {nutritionData && (
         <>
           <HamburgerMenu
